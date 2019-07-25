@@ -1,0 +1,46 @@
+version: '3.7'
+
+networks:
+    backend:
+        name: backend
+        # driver: overlay on swarm mode
+        internal: true
+
+volumes:
+    redis-data:
+
+services:
+    redis:
+        container_name: redis
+        hostname: redis
+
+        image: "redis"
+
+        expose:
+            - 6379
+
+        tty: false
+
+        restart: "on-failure:5"
+
+        read_only: true
+
+        security_opt:
+            - "no-new-privileges"
+
+        # only on compose version 2.x
+        #pids_limit: 1
+
+        cap_drop:
+            - ALL
+
+        networks:
+            - backend
+
+        volumes:
+            - redis-data:/data:noexec,mode=700,nodev,nosuid,size=10GB
+
+        deploy:
+            resources:
+                limits:
+                    memory: 4GB
