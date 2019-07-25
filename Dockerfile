@@ -39,11 +39,17 @@ COPY --from=builder /etc/passwd /etc/group /etc/shadow /etc/
 # copy our binaries into our scratch image
 COPY --from=builder /redis/redis-server /redis/redis-sentinel /
 
+# copy in our redis config file
+COPY redis.conf /
+
 # where we will store our data
 VOLUME /data
 
 # run as an unprivileged user instead of root
 USER app
 
+# default redis port
+EXPOSE 6379
+
 # entrypoint
-ENTRYPOINT ["/redis-server"]
+ENTRYPOINT ["/redis-server", "/redis.conf"]
