@@ -1,9 +1,11 @@
+# image used for extracting the latest redis version
+FROM redis:latest AS redistemp
+# extract the latest redis version
+RUN /usr/local/bin/redis-server --version | cut -d ' ' -f 3 | cut -d '=' -f 2 > /redis.version
+
 # our (temp) builder image for building
 # debian:buster not supported yet: https://github.com/GoogleContainerTools/distroless/issues/390
 FROM debian:stretch AS builder
-
-# your wanted redis version
-ENV REDIS_VERSION "5.0.5"
 
 # add unprivileged user
 RUN adduser --shell /bin/true --no-create-home --uid 1000 --disabled-password --disabled-login app \
@@ -18,12 +20,18 @@ RUN mkdir -p /redis/copy/data \
 RUN apt-get -q update \
 	&& apt-get -q install -y wget make tcl gcc libjemalloc-dev
 
-# get the redis source code and unpack it
-RUN wget "http://download.redis.io/releases/redis-${REDIS_VERSION}.tar.gz" \
-	&& tar -C redis -xvf "redis-${REDIS_VERSION}.tar.gz"
+# copy in the redis version
+COPY --from=redistemp /redis.version /
 
-# do everything in the right directory
-WORKDIR "/redis/redis-${REDIS_VERSION}"
+# get the redis source code and unpack it
+RUN export REDIS_VERSION="$(cat /redis.version)" ; echo "Using Redis version ${REDIS_VERSION}" \
+	&& redisHashLine="$(wget -qO - https://raw.githubusercontent.com/antirez/redis-hashes/master/README | grep 'hash redis' | grep -v 'rc\d' | grep -v '^#' | grep -F "${REDIS_VERSION}")" \
+	&& wget "http://download.redis.io/releases/redis-${REDIS_VERSION}.tar.gz" \
+	&& echo "$(echo "$redisHashLine" | cut -d ' ' -f 4) redis-${REDIS_VERSION}.tar.gz" | sha256sum --check \
+	&& tar -C redis -xf "redis-${REDIS_VERSION}.tar.gz" \
+	&& mv "/redis/redis-${REDIS_VERSION}/" /redis/src
+
+WORKDIR /redis/src
 
 # compile redis statically so everything (except glibc) is included
 RUN make CFLAGS="-static -static-libgcc" EXEEXT="-static -static-libgcc" LDFLAGS="-I/usr/local/include/"
