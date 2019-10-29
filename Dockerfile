@@ -7,11 +7,6 @@ RUN /usr/local/bin/redis-server --version | cut -d ' ' -f 3 | cut -d '=' -f 2 > 
 # debian:buster not supported yet: https://github.com/GoogleContainerTools/distroless/issues/390
 FROM debian:stretch AS builder
 
-# add unprivileged user
-RUN adduser --shell /bin/true --no-create-home --uid 1000 --disabled-password --disabled-login app \
-	&& sed -i -r "/^(app|root)/!d" /etc/group /etc/passwd \
-	&& sed -i -r 's#^(.*):[^:]*$#\1:/sbin/nologin#' /etc/passwd
-
 # prepare the chowned/chmodded volume directory (fails if /data already exists so we don't copy over files)
 RUN mkdir -p /redis/copy/data \
 	&& chmod 700 /redis
@@ -44,17 +39,14 @@ RUN cp src/redis-server src/redis-sentinel /redis/copy/
 # start from the distroless scratch image (with glibc), based on debian:stretch
 FROM gcr.io/distroless/base
 
-# add-in our unprivileged user
-COPY --from=builder /etc/passwd /etc/group /etc/shadow /etc/
-
 # copy our binaries into our scratch image
-COPY --from=builder --chown=app /redis/copy/ /
+COPY --from=builder --chown=nonroot /redis/copy/ /
 
 # copy in our redis config file
-COPY --chown=app redis.conf /
+COPY --chown=nonroot redis.conf /
 
 # run as an unprivileged user instead of root
-USER app
+USER nonroot
 
 # where we will store our data
 VOLUME /data
