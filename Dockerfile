@@ -36,8 +36,8 @@ RUN cp src/redis-server src/redis-sentinel /redis/copy/
 
 # ---
 
-# start from the distroless scratch image (with glibc), based on debian:stretch
-FROM gcr.io/distroless/base
+# start from the distroless scratch image (with glibc), based on debian:buster
+FROM gcr.io/distroless/base-debian10:nonroot
 
 # copy our binaries into our scratch image
 COPY --from=builder --chown=nonroot /redis/copy/ /
