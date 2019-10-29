@@ -25,7 +25,7 @@ RUN mkdir -p /redis/copy/data \
 # install the necessary build dependencies
 # shellcheck disable=DL3008
 RUN apt-get -q update \
-	&& apt-get -q install -y --no-install-recommends ca-certificates wget make tcl gcc libjemalloc-dev
+	&& apt-get -q install -y --no-install-recommends ca-certificates wget make tcl gcc libjemalloc-dev libc6-dev
 
 # copy in the redis version
 COPY --from=redistemp /redis.version /
