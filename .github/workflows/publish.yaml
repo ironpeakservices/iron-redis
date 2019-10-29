@@ -1,0 +1,25 @@
+on:
+  push:
+    branches:
+    - master
+
+name: push image
+jobs:
+  dockerpush:
+    name: docker build
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@master
+    - name: extract tag
+      id: vars
+      run: echo ::set-output name=redis_version::$(grep '^FROM redis' Dockerfile | cut -d ' ' -f 2 | cut -d ':' -f 2)
+    - run: echo "Pushing version ${{ steps.vars.outputs.redis_version }}"
+    - name: Publish to Registry
+      uses: elgohr/Publish-Docker-Github-Action@master
+      with:
+        registry: docker.pkg.github.com
+        name: "ironpeakservices/iron-redis/iron-redis:${{ steps.vars.outputs.redis_version }}"
+        username: hazcod
+        password: ${{ secrets.GITHUB_TOKEN }}
+
+
