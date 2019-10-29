@@ -16,7 +16,7 @@ RUN /usr/local/bin/redis-server --version | cut -d ' ' -f 3 | cut -d '=' -f 2 > 
 FROM debian:buster AS builder
 
 # make a pipe fail on the first failure
-#SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
 # prepare the chowned/chmodded volume directory (fails if /data already exists so we don't copy over files)
 RUN mkdir -p /redis/copy/data \
@@ -25,7 +25,7 @@ RUN mkdir -p /redis/copy/data \
 # install the necessary build dependencies
 # shellcheck disable=DL3008
 RUN apt-get -q update \
-	&& apt-get -q install -y --no-install-recommends wget make tcl gcc libjemalloc-dev
+	&& apt-get -q install -y --no-install-recommends ca-certificates wget make tcl gcc libjemalloc-dev
 
 # copy in the redis version
 COPY --from=redistemp /redis.version /
