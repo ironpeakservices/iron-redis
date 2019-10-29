@@ -23,7 +23,7 @@ RUN mkdir -p /redis/copy/data \
 	&& chmod 700 /redis
 
 # install the necessary build dependencies
-# shellcheck disable=DL3008
+# hadolint ignore=DL3008
 RUN apt-get -q update \
 	&& apt-get -q install -y --no-install-recommends ca-certificates wget make tcl gcc libjemalloc-dev libc6-dev
 
@@ -31,7 +31,7 @@ RUN apt-get -q update \
 COPY --from=redistemp /redis.version /
 
 # get the redis source code and unpack it
-# shellcheck disable=SC2155
+# hadolint ignore=SC2155
 RUN export REDIS_VERSION="$(cat /redis.version)" ; echo "Using Redis version ${REDIS_VERSION}" \
 	&& redisHashLine="$(wget -qO - https://raw.githubusercontent.com/antirez/redis-hashes/master/README | grep 'hash redis' | grep -v 'rc\d' | grep -v '^#' | grep -F "${REDIS_VERSION}")" \
 	&& wget "http://download.redis.io/releases/redis-${REDIS_VERSION}.tar.gz" \
