@@ -1,5 +1,9 @@
 # image used for extracting the latest redis version
-FROM redis:latest AS redistemp
+FROM redis:5.0.6 AS redistemp
+
+# make a pipe fail on the first failure
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+
 # extract the latest redis version
 RUN /usr/local/bin/redis-server --version | cut -d ' ' -f 3 | cut -d '=' -f 2 > /redis.version
 
@@ -7,13 +11,16 @@ RUN /usr/local/bin/redis-server --version | cut -d ' ' -f 3 | cut -d '=' -f 2 > 
 # debian:buster not supported yet: https://github.com/GoogleContainerTools/distroless/issues/390
 FROM debian:stretch AS builder
 
+# make a pipe fail on the first failure
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+
 # prepare the chowned/chmodded volume directory (fails if /data already exists so we don't copy over files)
 RUN mkdir -p /redis/copy/data \
 	&& chmod 700 /redis
 
 # install the necessary build dependencies
 RUN apt-get -q update \
-	&& apt-get -q install -y wget make tcl gcc libjemalloc-dev
+	&& apt-get -q install -y --no-install-recommends wget make tcl gcc libjemalloc-dev
 
 # copy in the redis version
 COPY --from=redistemp /redis.version /
