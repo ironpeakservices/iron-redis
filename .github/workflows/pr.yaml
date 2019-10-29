@@ -1,0 +1,24 @@
+on: pull_request
+name: dockerfile linting
+jobs:
+  dockerfilelint:
+    name: dockerfile lint
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@master
+    - name: hadolint
+      uses: burdzwastaken/hadolint-action@master
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        HADOLINT_ACTION_DOCKERFILE_FOLDER: .
+  
+  dockerbuild:
+    name: docker build
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@master
+    - name: extract tag
+      id: vars
+      run: echo ::set-output name=redis_version::$(grep '^FROM redis' Dockerfile | cut -d ' ' -f 2 | cut -d ':' -f 2)
+    - name: docker build
+      run: docker build . --file Dockerfile --tag image:${{ steps.vars.outputs.redis_version }}

@@ -1,24 +1,37 @@
 # image used for extracting the latest redis version
-FROM redis:latest AS redistemp
+FROM redis:5.0.6 AS redistemp
+
+# make a pipe fail on the first failure
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+
 # extract the latest redis version
 RUN /usr/local/bin/redis-server --version | cut -d ' ' -f 3 | cut -d '=' -f 2 > /redis.version
 
+#
+# ---
+#
+
 # our (temp) builder image for building
 # debian:buster not supported yet: https://github.com/GoogleContainerTools/distroless/issues/390
-FROM debian:stretch AS builder
+FROM debian:buster AS builder
+
+# make a pipe fail on the first failure
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
 # prepare the chowned/chmodded volume directory (fails if /data already exists so we don't copy over files)
 RUN mkdir -p /redis/copy/data \
 	&& chmod 700 /redis
 
 # install the necessary build dependencies
+# hadolint ignore=DL3008
 RUN apt-get -q update \
-	&& apt-get -q install -y wget make tcl gcc libjemalloc-dev
+	&& apt-get -q install -y --no-install-recommends ca-certificates wget make tcl gcc libjemalloc-dev libc6-dev
 
 # copy in the redis version
 COPY --from=redistemp /redis.version /
 
 # get the redis source code and unpack it
+# hadolint ignore=SC2155
 RUN export REDIS_VERSION="$(cat /redis.version)" ; echo "Using Redis version ${REDIS_VERSION}" \
 	&& redisHashLine="$(wget -qO - https://raw.githubusercontent.com/antirez/redis-hashes/master/README | grep 'hash redis' | grep -v 'rc\d' | grep -v '^#' | grep -F "${REDIS_VERSION}")" \
 	&& wget "http://download.redis.io/releases/redis-${REDIS_VERSION}.tar.gz" \
@@ -34,7 +47,9 @@ RUN make CFLAGS="-static -static-libgcc" EXEEXT="-static -static-libgcc" LDFLAGS
 # copy our binaries
 RUN cp src/redis-server src/redis-sentinel /redis/copy/
 
+#
 # ---
+#
 
 # start from the distroless scratch image (with glibc), based on debian:buster
 FROM gcr.io/distroless/base-debian10:nonroot
