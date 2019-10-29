@@ -1,7 +1,7 @@
 # ironpeakservices/iron-redis
 Secure base image for running Redis.
 
-Check it out on [Docker Hub](https://hub.docker.com/r/ironpeakservices/iron-redis)!
+`docker pull docker.pkg.github.com/ironpeakservices/iron-redis/iron-redis:5.0.6`
 
 ## How is this different?
 We build from the official redis source code, but additionally:
@@ -16,3 +16,7 @@ FROM ironpeakservices/iron-redis
 # add 'requirepass MySecret' into redis.conf
 COPY redis.conf / 
 ```
+
+## Update policy
+Updates to the official redis docker image are automatically created as a pull request and trigger linting & a docker build.
+When those checks complete without errors, a merge into master will trigger a deploy with the same version to packages.
