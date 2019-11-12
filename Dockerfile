@@ -24,8 +24,15 @@ RUN mkdir -p /redis/copy/data \
 
 # install the necessary build dependencies
 # hadolint ignore=DL3008
-RUN apt-get -q update \
-	&& apt-get -q install -y --no-install-recommends ca-certificates wget make tcl gcc libjemalloc-dev libc6-dev
+RUN apt-get update -y \
+    && apt-get -q install -y --no-install-recommends \
+        ca-certificates=20180409 \
+        wget=1.19.4-1ubuntu2.2 \
+        make=4.1-9.1ubuntu1 \
+        tcl=8.6.0+9 \
+        gcc=4:7.4.0-1ubuntu2.3 \
+        libjemalloc-dev=3.6.0-11 \
+        libc6-dev=2.27-3ubuntu1
 
 # copy in the redis version
 COPY --from=redistemp /redis.version /
