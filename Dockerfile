@@ -23,7 +23,6 @@ RUN mkdir -p /redis/copy/data \
 	&& chmod 700 /redis
 
 # install the necessary build dependencies
-# hadolint ignore=DL3008
 RUN apt-get update -y \
     && apt-get -q install -y --no-install-recommends \
         ca-certificates=20190110 \
