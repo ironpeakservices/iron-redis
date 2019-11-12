@@ -26,13 +26,13 @@ RUN mkdir -p /redis/copy/data \
 # hadolint ignore=DL3008
 RUN apt-get update -y \
     && apt-get -q install -y --no-install-recommends \
-        ca-certificates=20180409 \
-        wget=1.19.4-1ubuntu2.2 \
-        make=4.1-9.1ubuntu1 \
-        tcl=8.6.0+9 \
-        gcc=4:7.4.0-1ubuntu2.3 \
-        libjemalloc-dev=3.6.0-11 \
-        libc6-dev=2.27-3ubuntu1
+        ca-certificates=20190110 \
+        wget=1.20.1-1.1 \
+        make=4.2.1-1.2 \
+        tcl=8.6.9+1 \
+        gcc=4:8.3.0-1 \
+        libjemalloc-dev=5.1.0-3 \
+        libc6-dev=2.28-10
 
 # copy in the redis version
 COPY --from=redistemp /redis.version /
