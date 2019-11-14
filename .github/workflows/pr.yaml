@@ -6,7 +6,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions-contrib/golangci-lint@master
-      working-directory: ./healthcheck/
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
