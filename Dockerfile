@@ -1,3 +1,12 @@
+# image used for the healthcheck binary
+FROM golang:1.13.4-alpine AS gobuilder
+COPY healthcheck/ /go/src/healthcheck/
+RUN CGO_ENABLED=0 go build -ldflags '-w -s -extldflags "-static"' -o /healthcheck /go/src/healthcheck/
+
+#
+# ---
+#
+
 # image used for extracting the latest redis version
 FROM redis:5.0.6 AS redistemp
 
@@ -60,6 +69,15 @@ RUN cp src/redis-server src/redis-sentinel /redis/copy/
 # start from the distroless scratch image (with glibc), based on debian:buster
 FROM gcr.io/distroless/base-debian10:nonroot
 
+# container label annotations
+LABEL maintainer="hello@ironpeak.be"
+LABEL name="iron-redis"
+LABEL url="https://github.com/ironPeakServices/iron-redis"
+LABEL description="Secure base image for running Redis"
+
+# copy in our healthcheck binary
+COPY --from=gobuilder --chown=nonroot /healthcheck /healthcheck
+
 # copy our binaries into our scratch image
 COPY --from=builder --chown=nonroot /redis/copy/ /
 
@@ -77,6 +95,9 @@ WORKDIR /data
 
 # default redis port
 EXPOSE 6379
+
+# healthcheck to report the container status
+HEALTHCHECK --interval=10s --timeout=10s --start-period=5s --retries=3 CMD [ "/healthcheck", "6379" ]
 
 # entrypoint
 CMD ["/redis-server", "/redis.conf", "--port 6379"]
