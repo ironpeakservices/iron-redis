@@ -50,6 +50,11 @@ jobs:
     - name: extract tag
       id: vars
       run: echo ::set-output name=redis_version::$(grep '^FROM redis' Dockerfile | cut -d ' ' -f 2 | cut -d ':' -f 2)
+    - name: load cached docker image
+      uses: actions/cache@v1
+      with:
+        path: image.tar
+        key: image:${{ steps.vars.outputs.redis_version }}
     - name: load cached docker container
       run: docker load -i image.tar
     - name: cached scan db
