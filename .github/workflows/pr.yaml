@@ -7,7 +7,7 @@ jobs:
     steps:
     - uses: actions-contrib/golangci-lint@master
       with:
-        args: run
+        args: run healthcheck/
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
