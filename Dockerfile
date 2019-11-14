@@ -69,6 +69,12 @@ RUN cp src/redis-server src/redis-sentinel /redis/copy/
 # start from the distroless scratch image (with glibc), based on debian:buster
 FROM gcr.io/distroless/base-debian10:nonroot
 
+# container label annotations
+LABEL maintainer="hello@ironpeak.be"
+LABEL name="iron-redis"
+LABEL url="https://github.com/ironPeakServices/iron-redis"
+LABEL description="Secure base image for running Redis"
+
 # copy in our healthcheck binary
 COPY --from=gobuilder --chown=nonroot /healthcheck /healthcheck
 
