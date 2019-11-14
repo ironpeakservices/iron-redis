@@ -34,12 +34,12 @@ jobs:
     - name: docker build
       run: docker build . --file Dockerfile --tag image:${{ steps.vars.outputs.redis_version }}
     - name: save docker image for cache
-      run: docker save -o image.tar image:${{ steps.vars.outputs.redis_version }}
+      run: mkdir -p image/ && docker save -o image/image.tar image:${{ steps.vars.outputs.redis_version }}
     - name: cache docker image
       uses: actions/cache@v1
       with:
-        path: image.tar
-        key: image:${{ steps.vars.outputs.redis_version }}
+        path: image/
+        key: ${{ runner.os }}-docker-${{ github.sha }}
 
   dockerscan:
     name: docker security scan
@@ -53,10 +53,10 @@ jobs:
     - name: load cached docker image
       uses: actions/cache@v1
       with:
-        path: image.tar
-        key: image:${{ steps.vars.outputs.redis_version }}
+        path: image/
+        key: ${{ runner.os }}-docker-${{ github.sha }}
     - name: load cached docker container
-      run: docker load -i image.tar
+      run: docker load -i image/image.tar
     - name: cached scan db
       uses: actions/cache@preview
       with:
