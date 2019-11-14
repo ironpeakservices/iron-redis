@@ -4,9 +4,9 @@ jobs:
   golanglint:
     name: golang lint
     runs-on: ubuntu-latest
-    working-directory: ./healthcheck/
     steps:
     - uses: actions-contrib/golangci-lint@master
+      working-directory: ./healthcheck/
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
