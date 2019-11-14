@@ -13,7 +13,7 @@ We build from the official redis source code, but additionally:
 
 ## Example
 ```
-FROM ironpeakservices/iron-redis
+FROM docker.pkg.github.com/ironpeakservices/iron-redis/iron-redis:5.0.6
 # add 'requirepass MySecret' into redis.conf
 COPY redis.conf / 
 ```
