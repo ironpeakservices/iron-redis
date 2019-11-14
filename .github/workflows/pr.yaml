@@ -8,7 +8,7 @@ jobs:
     - uses: actions/checkout@master
     - uses: actions-contrib/golangci-lint@master
       with:
-        args: run healthcheck/
+        args: run ./...
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
