@@ -5,6 +5,7 @@ jobs:
     name: golang lint
     runs-on: ubuntu-latest
     steps:
+    - uses: actions/checkout@master
     - uses: actions-contrib/golangci-lint@master
       with:
         args: run healthcheck/
