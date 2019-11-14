@@ -48,9 +48,8 @@ jobs:
         key: trivy-vulndb
     - name: Install Trivy
       run:  |
-        wget https://github.com/aquasecurity/trivy/releases/download/v${version}/trivy_${version}_Linux-64bit.tar.gz
-        tar zxvf trivy_${version}_Linux-64bit.tar.gz
-      env:
-        version: 0.2.0
+        trivyRelease="$(curl -s "https://api.github.com/repos/aquasecurity/trivy/releases/latest" | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')"                             # Pluck JSON value)"
+        wget https://github.com/aquasecurity/trivy/releases/download/v${trivyRelease}/trivy_${trivyRelease}_Linux-64bit.tar.gz
+        tar zxvf trivy_${trivyRelease}_Linux-64bit.tar.gz
     - name: Scan
       run: ./trivy --exit-code 1 --no-progress --severity HIGH,CRITICAL,MEDIUM --cache-dir vulndb/ image
