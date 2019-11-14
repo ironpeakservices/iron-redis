@@ -1,5 +1,5 @@
 on: pull_request
-name: dockerfile linting
+name: PR Checks
 jobs:
   golanglint:
     name: golang lint
