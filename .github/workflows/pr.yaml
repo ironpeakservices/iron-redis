@@ -5,7 +5,7 @@ jobs:
     name: golang lint
     runs-on: ubuntu-latest
     steps:
-    - uses: actions-contrib/golangci-lint@master
+    - uses: reviewdog/action-golangci-lint@master
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
