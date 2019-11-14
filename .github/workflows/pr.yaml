@@ -35,12 +35,11 @@ jobs:
       with:
         path: vulndb/
         key: trivy-vulndb
-    - name: run security scan
+    - name: Install Trivy
+      run:  |
+        wget https://github.com/aquasecurity/trivy/releases/download/v${version}/trivy_${version}_Linux-64bit.tar.gz
+        tar zxvf trivy_${version}_Linux-64bit.tar.gz
       env:
-        DISTRO: debian
-      run: |
-        docker run --rm \
-          -v /var/run/docker.sock:/var/run/docker.sock \
-          -v "$(pwd)/vulndb/":/root/.cache/ \
-          aquasec/trivy --severity HIGH,CRITICAL,MEDIUM --no-progress --only-update $DISTRO --ignore-unfixed --exit-code 1 --cache-dir /root/.cache/ image
-        docker run --rm -v "$(pwd)/vulndb/":/root/.cache/ alpine:latest chmod 777 -R /root/.cache/
+        version: 0.2.0
+    - name: Scan
+      run: ./trivy --exit-code 1 --no-progress --severity HIGH,CRITICAL,MEDIUM --cache-dir vulndb/ image
