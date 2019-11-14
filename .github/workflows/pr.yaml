@@ -44,13 +44,14 @@ jobs:
   dockerscan:
     name: docker security scan
     runs-on: ubuntu-latest
+    needs: dockerbuild
     steps:
     - uses: actions/checkout@master
     - name: extract tag
       id: vars
       run: echo ::set-output name=redis_version::$(grep '^FROM redis' Dockerfile | cut -d ' ' -f 2 | cut -d ':' -f 2)
     - name: load cached docker container
-      run: docker load -i image.tar image:${{ steps.vars.outputs.redis_version }}
+      run: docker load -i image.tar
     - name: cached scan db
       uses: actions/cache@preview
       with:
