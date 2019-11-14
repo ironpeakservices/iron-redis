@@ -33,14 +33,24 @@ jobs:
       run: echo ::set-output name=redis_version::$(grep '^FROM redis' Dockerfile | cut -d ' ' -f 2 | cut -d ':' -f 2)
     - name: docker build
       run: docker build . --file Dockerfile --tag image:${{ steps.vars.outputs.redis_version }}
+    - name: save docker image for cache
+      run: docker save -o image.tar image:${{ steps.vars.outputs.redis_version }}
+    - name: cache docker image
+      uses: actions/cache@v1
+      with:
+        path: image.tar
+        key: image:${{ steps.vars.outputs.redis_version }}
 
   dockerscan:
     name: docker security scan
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@master
-    - name: docker build
-      run: docker build . --file Dockerfile --tag image
+    - name: extract tag
+      id: vars
+      run: echo ::set-output name=redis_version::$(grep '^FROM redis' Dockerfile | cut -d ' ' -f 2 | cut -d ':' -f 2)
+    - name: load cached docker container
+      run: docker load -i image.tar image:${{ steps.vars.outputs.redis_version }}
     - name: cached scan db
       uses: actions/cache@preview
       with:
@@ -52,4 +62,4 @@ jobs:
         wget https://github.com/aquasecurity/trivy/releases/download/v${trivyRelease}/trivy_${trivyRelease}_Linux-64bit.tar.gz
         tar zxvf trivy_${trivyRelease}_Linux-64bit.tar.gz
     - name: Scan
-      run: ./trivy --exit-code 1 --no-progress --severity HIGH,CRITICAL,MEDIUM --cache-dir vulndb/ image
+      run: ./trivy --exit-code 1 --no-progress --severity HIGH,CRITICAL,MEDIUM --cache-dir vulndb/ image:${{ steps.vars.outputs.redis_version }}
