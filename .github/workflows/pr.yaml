@@ -6,9 +6,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@master
-    - uses: actions-contrib/golangci-lint@master
+    - uses: matoous/golangci-lint-action@master
       with:
-        args: run ./healthcheck/healthcheck.go
+        args: run ./healthcheck/
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
