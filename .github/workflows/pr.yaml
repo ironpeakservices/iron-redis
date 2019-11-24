@@ -7,8 +7,10 @@ jobs:
     steps:
     - uses: actions/checkout@master
     - uses: reviewdog/action-golangci-lint@v1
-      env:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        args:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          level: info
 
   dockerfilelint:
     name: dockerfile lint
