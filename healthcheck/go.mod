@@ -1,4 +1,4 @@
-module github.com/ironpeakservices/iron-redis
+module github.com/ironpeakservices/iron-redis/healthcheck
 
 go 1.13
 
