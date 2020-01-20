@@ -9,20 +9,20 @@ jobs:
     name: docker build
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@master
+    - uses: actions/checkout@v2.0.0
     - name: extract tag
       id: vars
       run: echo ::set-output name=redis_version::$(grep '^FROM redis' Dockerfile | cut -d ' ' -f 2 | cut -d ':' -f 2)
     - run: echo "Pushing version ${{ steps.vars.outputs.redis_version }}"
     - name: Publish to Registry
-      uses: elgohr/Publish-Docker-Github-Action@master
+      uses: elgohr/Publish-Docker-Github-Action@2.12
       with:
         registry: docker.pkg.github.com
         name: "ironpeakservices/iron-redis/iron-redis:${{ steps.vars.outputs.redis_version }}"
         username: hazcod
         password: ${{ secrets.GITHUB_TOKEN }}
     - name: Create GitHub release
-      uses: actions/create-release@master
+      uses: actions/create-release@v1
       with:
           tag_name: ${{ steps.vars.outputs.redis_version }}
           release_name: iron-redis
