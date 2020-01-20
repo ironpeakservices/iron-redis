@@ -6,7 +6,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@master
-    - uses: reviewdog/action-golangci-lint@v1.1.6
+    - uses: reviewdog/action-golangci-lint@v1.1.7
       with:
         golangci_lint_flags: "./healthcheck"
         github_token: ${{ secrets.GITHUB_TOKEN }}
