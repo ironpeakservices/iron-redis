@@ -32,6 +32,7 @@ func main() {
 		fmt.Printf("redis healthcheck error: %+v\n", err)
 		os.Exit(1)
 	}
-
+	i := 3
+	i += 1
 	fmt.Printf("pong!")
 }
