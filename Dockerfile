@@ -20,8 +20,7 @@ RUN /usr/local/bin/redis-server --version | cut -d ' ' -f 3 | cut -d '=' -f 2 > 
 # ---
 #
 
-# our (temp) builder image for building
-# debian:buster not supported yet: https://github.com/GoogleContainerTools/distroless/issues/390
+# our temp image for building
 FROM debian:buster AS builder
 
 # make a pipe fail on the first failure
