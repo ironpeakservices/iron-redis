@@ -8,7 +8,7 @@ RUN CGO_ENABLED=0 go build -ldflags '-w -s -extldflags "-static"' -o /healthchec
 #
 
 # image used for extracting the latest redis version
-FROM redis:6.0.1 AS redistemp
+FROM redis:6.0.2 AS redistemp
 
 # make a pipe fail on the first failure
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
