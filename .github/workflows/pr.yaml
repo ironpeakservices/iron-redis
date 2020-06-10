@@ -5,11 +5,12 @@ jobs:
     name: golang lint
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2.0.0
-    - uses: hazcod/action-golangci-lint@master
+    - uses: actions/checkout@master
+    - uses: reviewdog/action-golangci-lint@v1.1.7
       with:
+        reporter: github-pr-review
+        golangci_lint_flags: "./healthcheck"
         github_token: ${{ secrets.GITHUB_TOKEN }}
-        directory: healthcheck
 
   dockerfilelint:
     name: dockerfile lint
