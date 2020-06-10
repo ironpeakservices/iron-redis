@@ -1,5 +1,5 @@
 # image used for the healthcheck binary
-FROM golang:1.13.6-alpine AS gobuilder
+FROM golang:1.14.4-alpine AS gobuilder
 COPY healthcheck/ /go/src/healthcheck/
 RUN CGO_ENABLED=0 go build -ldflags '-w -s -extldflags "-static"' -o /healthcheck /go/src/healthcheck/
 
@@ -8,7 +8,7 @@ RUN CGO_ENABLED=0 go build -ldflags '-w -s -extldflags "-static"' -o /healthchec
 #
 
 # image used for extracting the latest redis version
-FROM redis:5.0.7 AS redistemp
+FROM redis:6.0.4 AS redistemp
 
 # make a pipe fail on the first failure
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
@@ -20,8 +20,7 @@ RUN /usr/local/bin/redis-server --version | cut -d ' ' -f 3 | cut -d '=' -f 2 > 
 # ---
 #
 
-# our (temp) builder image for building
-# debian:buster not supported yet: https://github.com/GoogleContainerTools/distroless/issues/390
+# our temp image for building
 FROM debian:buster AS builder
 
 # make a pipe fail on the first failure

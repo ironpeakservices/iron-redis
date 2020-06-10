@@ -18,7 +18,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2.0.0
     - name: hadolint
-      uses: burdzwastaken/hadolint-action@1.6.0
+      uses: burdzwastaken/hadolint-action@1.8.0
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         HADOLINT_ACTION_DOCKERFILE_FOLDER: .
@@ -69,3 +69,12 @@ jobs:
         tar zxvf trivy_${trivyRelease}_Linux-64bit.tar.gz
     - name: Scan
       run: ./trivy --exit-code 1 --no-progress --severity HIGH,CRITICAL,MEDIUM --cache-dir vulndb/ image:${{ steps.vars.outputs.redis_version }}
+
+  approve:
+    name: Dependabot PR Auto-approve
+    if: github.actor == 'dependabot[bot]' || github.actor == 'dependabot-preview[bot]'
+    runs-on: ubuntu-latest
+    steps:
+    - uses: hmarr/auto-approve-action@v2.0.0
+      with:
+        github-token: "${{ secrets.GITHUB_TOKEN }}"
