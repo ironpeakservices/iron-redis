@@ -3,8 +3,11 @@ package main
 import (
 	"fmt"
 	"os"
-
 	"github.com/go-redis/redis"
+)
+
+const (
+	redisHost = "localhost"
 )
 
 func getRedisClient(hostname string, port string) *redis.Client {
@@ -25,7 +28,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	client := getRedisClient("localhost", os.Args[1])
+	client := getRedisClient(redisHost, os.Args[1])
 	defer client.Close()
 
 	if err := pingRedis(client); err != nil {
