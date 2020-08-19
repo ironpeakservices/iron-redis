@@ -16,6 +16,12 @@ jobs:
       - 
         name: Set env
         run: echo ::set-env name=RELEASE_VERSION::${GITHUB_REF#refs/*/}
+      -
+         name: Docker login
+         env:
+           USER: hazcod
+           REGISTRY: docker.pkg.github.com/ironpeakservices/iron-redis
+         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login -u "${USER}" --password-stdin "${REGISTRY}"
       - 
         name: Run vulnerability scanner
         uses: aquasecurity/trivy-action@master
