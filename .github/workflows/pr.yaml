@@ -1,12 +1,15 @@
 on: pull_request
 name: PR Checks
 jobs:
+
   golanglint:
     name: golang lint
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@master
-    - uses: reviewdog/action-golangci-lint@v1.11
+    - 
+      uses: actions/checkout@master
+    - 
+      uses: reviewdog/action-golangci-lint@v1.11
       with:
         reporter: github-pr-review
         golangci_lint_flags: "./healthcheck"
@@ -16,8 +19,10 @@ jobs:
     name: dockerfile lint
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2.0.0
-    - name: hadolint
+    - 
+      uses: actions/checkout@v2.0.0
+    - 
+      name: hadolint
       uses: burdzwastaken/hadolint-action@1.8.0
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -27,25 +32,49 @@ jobs:
     name: docker build
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2.0.0
-    - name: extract tag
+    - 
+      uses: actions/checkout@v2.0.0
+    - 
+      name: extract tag
       id: vars
       run: echo ::set-output name=redis_version::$(grep '^FROM redis' Dockerfile | cut -d ' ' -f 2 | cut -d ':' -f 2)
-    - name: docker build
-      run: docker build . --file Dockerfile --tag image:${{ steps.vars.outputs.redis_version }}
-    - name: save docker image for cache
-      run: mkdir -p image/ && docker save -o image/image.tar image:${{ steps.vars.outputs.redis_version }}
-    - name: cache docker image
+    - 
+      name: load cached docker image
       uses: actions/cache@v2
       with:
         path: image/
         key: ${{ runner.os }}-docker-${{ github.sha }}
+    - 
+      name: load cached docker container
+      run: docker load -i image/image.tar
+    - 
+      name: cached scan db
+      uses: actions/cache@v2
+      with:
+        path: vulndb/
+        key: trivy-vulndb
+    - 
+      name: Run vulnerability scanner
+      uses: aquasecurity/trivy-action@master
+      with:
+        image-ref: image:${{ steps.vars.outputs.redis_version }}
+        format: 'template'
+        template: '@/contrib/sarif.tpl'
+        output: 'trivy-results.sarif'
+        ignore-unfixed: true
+        severity: 'CRITICAL,HIGH,MEDIUM'
+    - 
+      name: Upload Trivy scan results to Security tab
+      uses: github/codeql-action/upload-sarif@v1
+      with:
+        sarif_file: 'trivy-results.sarif'
 
   autoapprove:
     name: Dependabot PR Auto-approve
     runs-on: ubuntu-latest
     steps:
-    - uses: hmarr/auto-approve-action@v2.0.0
+    - 
+      uses: hmarr/auto-approve-action@v2.0.0
       if: github.actor == 'dependabot[bot]' || github.actor == 'dependabot-preview[bot]'
       with:
         github-token: "${{ secrets.GITHUB_TOKEN }}"
