@@ -10,6 +10,7 @@ We build from the official redis source code, but additionally:
 - hardened redis config
 - hardened Docker Compose file
 - max volume size set to 10GB, max memory set to 4GB
+- Continuous vulnerability scanning
 
 ## Example
 ```
