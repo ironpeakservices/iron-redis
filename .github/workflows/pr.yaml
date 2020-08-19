@@ -75,7 +75,9 @@ jobs:
           --cache-dir vulndb/ \
           --template sarif.tpl -o results.sarif \
           image:${{ steps.vars.outputs.redis_version }}
-    - name: Upload Anchore Scan Report
+          
+        cat results.sarif
+    - name: Upload Scan Report
       uses: github/codeql-action/upload-sarif@v1
       with:
         sarif_file: results.sarif
