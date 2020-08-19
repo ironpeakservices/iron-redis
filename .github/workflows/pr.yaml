@@ -70,7 +70,7 @@ jobs:
         curl -O sarif.tpl https://raw.githubusercontent.com/aquasecurity/trivy/master/contrib/sarif.tpl
     - name: Scan
       run: |
-        ./trivy --exit-code 1 --no-progress \
+        ./trivy --no-progress \
           --severity HIGH,CRITICAL,MEDIUM \
           --cache-dir vulndb/ \
           --template sarif.tpl -o results.sarif \
