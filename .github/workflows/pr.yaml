@@ -93,6 +93,21 @@ jobs:
       with:
         sarif_file: 'trivy-results.sarif'
 
+  goscan:
+    name: Go Scan
+    runs-on: ubuntu-latest
+    steps:
+    - 
+      uses: actions/checkout@v2
+    - 
+      name: Initialize CodeQL
+      uses: github/codeql-action/init@v1
+      with:
+        languages: go
+    - 
+      name: Perform CodeQL Analysis
+      uses: github/codeql-action/analyze@v1
+
   autoapprove:
     name: Dependabot PR Auto-approve
     runs-on: ubuntu-latest
