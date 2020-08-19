@@ -20,13 +20,13 @@ jobs:
          name: Docker login
          env:
            USER: hazcod
-           REGISTRY: https://docker.pkg.github.com/v2/ironpeakservices/iron-redis
+           REGISTRY: docker.pkg.github.com
          run: echo "${{ secrets.PACKAGE_TOKEN }}" | docker login -u "${USER}" --password-stdin "${REGISTRY}"
       - 
         name: Run vulnerability scanner
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: 'docker.pkg.github.com/ironpeakservices/iron-redis/iron-redis:${{ env.RELEASE_VERSION }}'
+          image-ref: 'docker.pkg.github.com/ironpeakservices/iron-redis:${{ env.RELEASE_VERSION }}'
           format: 'template'
           template: '@/contrib/sarif.tpl'
           output: 'trivy-results.sarif'
