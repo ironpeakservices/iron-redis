@@ -1,5 +1,5 @@
 # image used for the healthcheck binary
-FROM golang:1.14.4-alpine AS gobuilder
+FROM golang:1.15.0-alpine AS gobuilder
 COPY healthcheck/ /go/src/healthcheck/
 RUN CGO_ENABLED=0 go build -ldflags '-w -s -extldflags "-static"' -o /healthcheck /go/src/healthcheck/
 
@@ -8,7 +8,7 @@ RUN CGO_ENABLED=0 go build -ldflags '-w -s -extldflags "-static"' -o /healthchec
 #
 
 # image used for extracting the latest redis version
-FROM redis:6.0.4 AS redistemp
+FROM redis:6.0.6 AS redistemp
 
 # make a pipe fail on the first failure
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
