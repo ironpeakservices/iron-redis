@@ -20,7 +20,7 @@ jobs:
          name: Docker login
          env:
            USER: hazcod
-           REGISTRY: docker.pkg.github.com/ironpeakservices/iron-redis
+           REGISTRY: https://docker.pkg.github.com/v2/ironpeakservices/iron-redis
          run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login -u "${USER}" --password-stdin "${REGISTRY}"
       - 
         name: Run vulnerability scanner
