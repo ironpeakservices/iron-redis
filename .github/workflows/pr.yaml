@@ -67,8 +67,18 @@ jobs:
         trivyRelease="$(curl -s "https://api.github.com/repos/aquasecurity/trivy/releases/latest" | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/' | cut -d 'v' -f 2)"
         wget https://github.com/aquasecurity/trivy/releases/download/v${trivyRelease}/trivy_${trivyRelease}_Linux-64bit.tar.gz
         tar zxvf trivy_${trivyRelease}_Linux-64bit.tar.gz
+        curl -O sarif.tpl https://raw.githubusercontent.com/aquasecurity/trivy/master/contrib/sarif.tpl
     - name: Scan
-      run: ./trivy --exit-code 1 --no-progress --severity HIGH,CRITICAL,MEDIUM --cache-dir vulndb/ image:${{ steps.vars.outputs.redis_version }}
+      run: |
+        ./trivy --exit-code 1 --no-progress \
+          --severity HIGH,CRITICAL,MEDIUM \
+          --cache-dir vulndb/ \
+          --template sarif.tpl -o results.sarif \
+          image:${{ steps.vars.outputs.redis_version }}
+    - name: Upload Anchore Scan Report
+      uses: github/codeql-action/upload-sarif@v1
+      with:
+        sarif_file: results.sarif
 
   autoapprove:
     name: Dependabot PR Auto-approve
