@@ -1,7 +1,7 @@
 # ironpeakservices/iron-redis
 Secure base image for running Redis.
 
-`docker pull docker.pkg.github.com/ironpeakservices/iron-redis/iron-redis:5.0.6`
+`docker pull ghcr.io/ironpeakservices/iron-redis:1.0.0`
 
 ## How is this different?
 We build from the official redis source code, but additionally:
@@ -14,7 +14,7 @@ We build from the official redis source code, but additionally:
 
 ## Example
 ```
-FROM docker.pkg.github.com/ironpeakservices/iron-redis/iron-redis:5.0.6
+FROM ghcr.io/ironpeakservices/iron-redis:1.0.0
 # add 'requirepass MySecret' into redis.conf
 COPY redis.conf / 
 ```
