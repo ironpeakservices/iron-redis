@@ -23,7 +23,7 @@ jobs:
       uses: actions/checkout@v2.0.0
     - 
       name: hadolint
-      uses: burdzwastaken/hadolint-action@1.9.0
+      uses: burdzwastaken/hadolint-action@1.10.0
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         HADOLINT_ACTION_DOCKERFILE_FOLDER: .
