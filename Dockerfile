@@ -33,7 +33,7 @@ RUN mkdir -p /redis/copy/data \
 # install the necessary build dependencies
 RUN apt-get update -y \
     && apt-get -q install -y --no-install-recommends \
-        ca-certificates=20190110 \
+        ca-certificates \
         wget=1.20.1-1.1 \
         make=4.2.1-1.2 \
         tcl=8.6.9+1 \
