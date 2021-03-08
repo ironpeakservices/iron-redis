@@ -9,7 +9,7 @@ jobs:
     - 
       uses: actions/checkout@master
     - 
-      uses: reviewdog/action-golangci-lint@v1.18
+      uses: reviewdog/action-golangci-lint@v1.19
       with:
         reporter: github-pr-review
         golangci_lint_flags: "./healthcheck"
