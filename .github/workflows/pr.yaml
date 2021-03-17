@@ -9,7 +9,7 @@ jobs:
     - 
       uses: actions/checkout@master
     - 
-      uses: reviewdog/action-golangci-lint@v1.18
+      uses: reviewdog/action-golangci-lint@v1.19
       with:
         reporter: github-pr-review
         golangci_lint_flags: "./healthcheck"
@@ -107,7 +107,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - 
-      uses: hmarr/auto-approve-action@v2.0.0
+      uses: hmarr/auto-approve-action@v2.1.0
       if: github.actor == 'dependabot[bot]' || github.actor == 'dependabot-preview[bot]'
       with:
         github-token: "${{ secrets.GITHUB_TOKEN }}"
