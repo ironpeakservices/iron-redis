@@ -102,12 +102,3 @@ jobs:
       name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v1
 
-  autoapprove:
-    name: Dependabot PR Auto-approve
-    runs-on: ubuntu-latest
-    steps:
-    - 
-      uses: hmarr/auto-approve-action@v2.1.0
-      if: github.actor == 'dependabot[bot]' || github.actor == 'dependabot-preview[bot]'
-      with:
-        github-token: "${{ secrets.GITHUB_TOKEN }}"
