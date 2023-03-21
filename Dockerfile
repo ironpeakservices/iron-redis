@@ -9,7 +9,7 @@ RUN CGO_ENABLED=0 go build -trimpath -ldflags '-w -s -extldflags "-static"' -o /
 #
 
 # image used for extracting the latest redis version
-FROM redis:7.0.3 AS redistemp
+FROM redis:7.0.10 AS redistemp
 
 # make a pipe fail on the first failure
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
