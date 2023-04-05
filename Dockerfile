@@ -1,5 +1,5 @@
 # image used for the healthcheck binary
-FROM golang:1.20.2-alpine AS gobuilder
+FROM golang:1.20.3-alpine AS gobuilder
 COPY healthcheck/ /go/src/healthcheck/
 WORKDIR /go/src/healthcheck
 RUN CGO_ENABLED=0 go build -trimpath -ldflags '-w -s -extldflags "-static"' -o /healthcheck ./...
