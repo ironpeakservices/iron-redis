@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - 
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
     - 
       uses: reviewdog/action-golangci-lint@v2
       with:
@@ -20,7 +20,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - 
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
     - 
       name: hadolint
       uses: burdzwastaken/hadolint-action@1.14.0
@@ -33,7 +33,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - 
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
     - 
       name: extract tag
       id: vars
@@ -57,7 +57,7 @@ jobs:
     needs: dockerbuild
     steps:
     - 
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
     - 
       name: extract tag
       id: vars
@@ -92,7 +92,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - 
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
     - 
       name: Initialize CodeQL
       uses: github/codeql-action/init@v1
