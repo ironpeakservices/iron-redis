@@ -37,7 +37,7 @@ jobs:
           severity: 'CRITICAL,HIGH,MEDIUM'
       - 
         name: Upload Trivy scan results to Security tab
-        uses: github/codeql-action/upload-sarif@v1
+        uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: 'trivy-results.sarif'
 
@@ -52,9 +52,9 @@ jobs:
       if: ${{ github.event_name == 'pull_request' }}
     - 
       name: Initialize CodeQL
-      uses: github/codeql-action/init@v1
+      uses: github/codeql-action/init@v3
       with:
         languages: go
     - 
       name: Perform CodeQL Analysis
-      uses: github/codeql-action/analyze@v1
+      uses: github/codeql-action/analyze@v3
